@@ -1,4 +1,4 @@
-package cmdbot
+package clibot
 
 import (
 	"github.com/Mrs4s/MiraiGo/client"

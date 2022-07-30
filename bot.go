@@ -1,4 +1,4 @@
-package cmdbot
+package clibot
 
 import (
 	"github.com/Logiase/MiraiGo-Template/bot"
@@ -11,7 +11,7 @@ import (
 type cmdBot struct{}
 
 const (
-	name = "rehtt/cmd"
+	name = "rehtt/cli"
 )
 
 var (
@@ -40,7 +40,7 @@ func (c *cmdBot) PostInit() {
 }
 
 func (c *cmdBot) Serve(bot *bot.Bot) {
-	bot.OnGroupMessage(func(client *client.QQClient, message *message.GroupMessage) {
+	bot.GroupMessageEvent.Subscribe(func(client *client.QQClient, message *message.GroupMessage) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
 		msg.client = client
@@ -48,7 +48,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 		msg.MsgType = MsgTypeGroup
 		msg.parseCMD()
 	})
-	bot.OnPrivateMessage(func(qqClient *client.QQClient, privateMessage *message.PrivateMessage) {
+	bot.PrivateMessageEvent.Subscribe(func(qqClient *client.QQClient, privateMessage *message.PrivateMessage) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
 		msg.client = qqClient
@@ -56,7 +56,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 		msg.MsgType = MsgTypePrivate
 		msg.parseCMD()
 	})
-	bot.OnTempMessage(func(qqClient *client.QQClient, event *client.TempMessageEvent) {
+	bot.TempMessageEvent.Subscribe(func(qqClient *client.QQClient, event *client.TempMessageEvent) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
 		msg.client = qqClient

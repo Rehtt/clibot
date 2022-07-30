@@ -3,7 +3,7 @@
  * @Date: 2022/7/30 上午 08:41
  */
 
-package cmdbot
+package clibot
 
 import (
 	"github.com/Mrs4s/MiraiGo/client"

@@ -3,7 +3,7 @@
  * @Date: 2022/7/30 上午 09:11
  */
 
-package cmdbot
+package clibot
 
 import (
 	"fmt"
