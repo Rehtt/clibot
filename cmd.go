@@ -52,7 +52,7 @@ type Sender struct {
 }
 
 var (
-	root = new(CMD)
+	CliRoot = new(CMD)
 )
 
 type CMD struct {
@@ -129,9 +129,9 @@ func (m *Msg) parseCMD() {
 		}
 	}()
 
-	cmdF := root.findCMD(c, m.Sender.Uin)
+	cmdF := CliRoot.findCMD(c, m.Sender.Uin)
 	if cmdF == nil {
-		root.Help()
+		CliRoot.Help()
 		return
 	}
 	if cmdF.Func != nil {

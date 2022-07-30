@@ -25,7 +25,7 @@ func init() {
 				sendMsg.Append(message.NewAt(msg.Sender.Uin))
 			}
 
-			for _, v := range root.cmds {
+			for _, v := range CliRoot.cmds {
 				if !HasPermission(msg.Sender.Uin, v.Permission) {
 					continue
 				}
@@ -40,45 +40,5 @@ func init() {
 			return nil
 		},
 	}
-	root.AddCommand(help)
+	CliRoot.AddCommand(help)
 }
-
-//type help struct {
-//}
-//
-//func (h *help) Key() string {
-//	return "help"
-//}
-//
-//func (h *help) Help() string {
-//	return "输出所有命令列表，及其帮助"
-//}
-//
-//func (h *help) Run(client *client.QQClient, msg *Msg) error {
-//	sendMsg := message.NewSendingMessage()
-//	var cmdHelp strings.Builder
-//
-//	if msg.MsgType == MsgTypeGroup {
-//		sendMsg.Append(message.NewAt(msg.Sender.Uin))
-//		cmdHelp.WriteByte('\n')
-//	}
-//
-//	for k, v := range cmdMap {
-//		cmdHelp.WriteByte('/')
-//		cmdHelp.WriteString(k)
-//		cmdHelp.WriteString(" ")
-//		cmdHelp.WriteString(v.Help())
-//		cmdHelp.WriteByte('\n')
-//	}
-//	sendMsg.Append(message.NewText(cmdHelp.String()))
-//	msg.Reply(sendMsg)
-//	return nil
-//}
-//
-//var (
-//	h = new(help)
-//)
-//
-//func init() {
-//	Register(h)
-//}

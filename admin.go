@@ -59,5 +59,5 @@ func init() {
 			},
 		},
 	)
-	root.AddCommand(admin)
+	CliRoot.AddCommand(admin)
 }
