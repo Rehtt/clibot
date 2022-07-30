@@ -17,6 +17,7 @@ type Msg struct {
 	Uin    int64
 	Name   string
 	Sender *Sender
+	Msg    string
 
 	MsgType    string
 	client     *client.QQClient
@@ -56,12 +57,14 @@ var (
 )
 
 type CMD struct {
-	Use         string
-	Instruction string
-	Func        func(data []string, cmd *CMD, client *client.QQClient, msg *Msg) error
-	Permission  []string
-	floor       int
-	cmds        []*CMD
+	Use            string
+	Instruction    string
+	Func           func(data []string, cmd *CMD, client *client.QQClient, msg *Msg) error
+	Permission     []string
+	Ignore         bool // 忽略指令，时刻处于激活状态，只适用于头指令
+	ActivationFunc func(cmd *CMD, qqClient *client.QQClient, msg *Msg) error
+	floor          int
+	cmds           []*CMD
 }
 
 func (c *CMD) AddCommand(cs ...*CMD) {
@@ -88,10 +91,9 @@ func (c *CMD) findCMD(data []string, uin int64) *CMD {
 
 func (m *Msg) parseCMD() {
 
-	var msgData string
 	switch m.MsgType {
 	case MsgTypeGroupTemp:
-		msgData = m.tempMsg.ToString()
+		m.Msg = m.tempMsg.ToString()
 		m.Sender = &Sender{
 			Uin:  m.tempMsg.Sender.Uin,
 			Name: m.tempMsg.Sender.DisplayName(),
@@ -100,7 +102,7 @@ func (m *Msg) parseCMD() {
 		m.Name = m.tempMsg.GroupName
 
 	case MsgTypePrivate:
-		msgData = m.privateMsg.ToString()
+		m.Msg = m.privateMsg.ToString()
 		m.Sender = &Sender{
 			Uin:  m.privateMsg.Sender.Uin,
 			Name: m.privateMsg.Sender.DisplayName(),
@@ -108,7 +110,7 @@ func (m *Msg) parseCMD() {
 		m.Uin = m.privateMsg.Sender.Uin
 		m.Name = m.privateMsg.Sender.DisplayName()
 	case MsgTypeGroup:
-		msgData = m.groupMsg.ToString()
+		m.Msg = m.groupMsg.ToString()
 		m.Sender = &Sender{
 			Uin:  m.groupMsg.Sender.Uin,
 			Name: m.groupMsg.Sender.DisplayName(),
@@ -116,8 +118,14 @@ func (m *Msg) parseCMD() {
 		m.Uin = m.groupMsg.GroupCode
 		m.Name = m.groupMsg.GroupName
 	}
-	c := strings.Split(msgData, " ")
+
+	c := strings.Split(m.Msg, " ")
 	if len(c) < 1 || strings.Index(c[0], "/") != 0 {
+		for _, c := range CliRoot.cmds {
+			if c.Ignore {
+				c.ActivationFunc(c, m.client, m)
+			}
+		}
 		return
 	}
 	c[0] = c[0][1:]
