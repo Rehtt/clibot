@@ -63,6 +63,7 @@ type CMD struct {
 	Permission     []string
 	Ignore         bool // 忽略指令，时刻处于激活状态，只适用于头指令
 	ActivationFunc func(cmd *CMD, qqClient *client.QQClient, msg *Msg) error
+	OnClose        func()
 	floor          int
 	cmds           []*CMD
 }
@@ -150,4 +151,13 @@ func (m *Msg) parseCMD() {
 
 func (m *Msg) Logger() logrus.FieldLogger {
 	return logger
+}
+
+func onClose(c *CMD) {
+	for _, c := range c.cmds {
+		onClose(c)
+	}
+	if c.OnClose != nil {
+		c.OnClose()
+	}
 }

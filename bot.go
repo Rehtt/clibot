@@ -71,6 +71,7 @@ func (c *cmdBot) Start(bot *bot.Bot) {
 }
 
 func (c *cmdBot) Stop(bot *bot.Bot, wg *sync.WaitGroup) {
+	onClose(CliRoot)
 	wg.Done()
 }
 
