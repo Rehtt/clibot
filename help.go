@@ -24,8 +24,11 @@ func init() {
 			if msg.MsgType == MsgTypeGroup {
 				sendMsg.Append(message.NewAt(msg.Sender.Uin))
 			}
-
-			for _, v := range CliRoot.cmds {
+			var cmds = CliRoot.cmds
+			if len(args) != 0 {
+				cmds = CliRoot.findCMD(args[1:], msg.Sender.Uin).cmds
+			}
+			for _, v := range cmds {
 				if !HasPermission(msg.Sender.Uin, v.Permission) {
 					continue
 				}

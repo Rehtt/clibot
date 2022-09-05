@@ -19,6 +19,7 @@ func init() {
 		Func: func(args []string, cmd *CMD, client *client.QQClient, msg *Msg) error {
 			return nil
 		},
+		Permission: []string{"admin"},
 	}
 	admin.AddCommand(
 		&CMD{
