@@ -132,22 +132,30 @@ func (m *Msg) parseCMD() {
 		}
 		return
 	}
+	arg := make([]string, 0, len(c))
 	c[0] = c[0][1:]
+
+	for i := range c {
+		if c[i] == "" {
+			continue
+		}
+		arg = append(arg, c[i])
+	}
 
 	var err error
 	defer func() {
 		if err != nil {
-			logger.Errorf("%s: %s", c, err.Error())
+			logger.Errorf("%s: %s", arg, err.Error())
 		}
 	}()
 
-	cmdF := CliRoot.findCMD(c, m.Sender.Uin)
+	cmdF := CliRoot.findCMD(arg, m.Sender.Uin)
 	if cmdF == nil {
 		CliRoot.Help()
 		return
 	}
 	if cmdF.Func != nil {
-		err = cmdF.Func(c[cmdF.floor:], cmdF, m.client, m)
+		err = cmdF.Func(arg[cmdF.floor:], cmdF, m.client, m)
 	}
 
 }
