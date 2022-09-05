@@ -26,7 +26,7 @@ func init() {
 			}
 			var cmds = CliRoot.cmds
 			if len(args) != 0 {
-				cmds = CliRoot.findCMD(args[1:], msg.Sender.Uin).cmds
+				cmds = CliRoot.findCMD(args, msg.Sender.Uin).cmds
 			}
 			for _, v := range cmds {
 				if !HasPermission(msg.Sender.Uin, v.Permission) {
