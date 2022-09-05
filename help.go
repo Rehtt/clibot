@@ -33,7 +33,9 @@ func init() {
 					continue
 				}
 				cmdHelp.WriteByte('\n')
-				cmdHelp.WriteByte('/')
+				if len(args) == 0 {
+					cmdHelp.WriteByte('/')
+				}
 				cmdHelp.WriteString(v.Use)
 				cmdHelp.WriteString(" ")
 				cmdHelp.WriteString(v.Instruction)
