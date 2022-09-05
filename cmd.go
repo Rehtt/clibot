@@ -87,6 +87,9 @@ func (c *CMD) findCMD(data []string, uin int64) *CMD {
 			return nil
 		}
 	}
+	if c != CliRoot {
+		return c
+	}
 	return nil
 }
 
