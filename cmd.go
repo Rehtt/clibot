@@ -98,6 +98,11 @@ func (c *CMD) findCMD(data []string, uin int64) *CMD {
 
 func (m *Msg) parseCMD() {
 
+	// id发生溢出，临时处理
+	if m.Id < 0 {
+		m.Id += 65536
+	}
+
 	switch m.MsgType {
 	case MsgTypeGroupTemp:
 		tempMsg := m.Original.(*message.TempMessage)
@@ -178,7 +183,9 @@ func onClose(c *CMD) {
 
 func (m *Msg) activationFunc(cmd *CMD) {
 	for _, c := range cmd.cmds {
-		m.activationFunc(c)
+		if len(c.cmds) > 0 {
+			m.activationFunc(c)
+		}
 		if c.ActivationFunc != nil {
 			c.ActivationFunc(c, m.client, m)
 		}
