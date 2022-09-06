@@ -102,6 +102,8 @@ func (m *Msg) parseCMD() {
 		m.Id += 1 << 16
 	}
 
+	m.Msg = ""
+
 	switch m.MsgType {
 	case MsgTypeGroupTemp:
 		tempMsg := m.Original.(*message.TempMessage)
