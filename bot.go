@@ -43,6 +43,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 	bot.GroupMessageEvent.Subscribe(func(client *client.QQClient, message *message.GroupMessage) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
+		msg.Id = message.Id
 		msg.client = client
 		msg.Original = message
 		msg.MsgType = MsgTypeGroup
@@ -51,6 +52,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 	bot.PrivateMessageEvent.Subscribe(func(qqClient *client.QQClient, privateMessage *message.PrivateMessage) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
+		msg.Id = privateMessage.Id
 		msg.client = qqClient
 		msg.Original = privateMessage
 		msg.MsgType = MsgTypePrivate
@@ -59,6 +61,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 	bot.TempMessageEvent.Subscribe(func(qqClient *client.QQClient, event *client.TempMessageEvent) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
+		msg.Id = event.Message.Id
 		msg.client = qqClient
 		msg.Original = event.Message
 		msg.MsgType = MsgTypeGroupTemp

@@ -14,6 +14,7 @@ const (
 )
 
 type Msg struct {
+	Id     int32
 	Uin    int64
 	Name   string
 	Sender *Sender
