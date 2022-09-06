@@ -59,11 +59,12 @@ var (
 )
 
 type CMD struct {
-	Use            string
-	Instruction    string
-	Func           func(data []string, cmd *CMD, client *client.QQClient, msg *Msg) error
-	Permission     []string
-	Ignore         bool // 忽略指令，时刻处于激活状态，只适用于头指令
+	Use         string
+	Instruction string
+	Func        func(data []string, cmd *CMD, client *client.QQClient, msg *Msg) error
+	Permission  []string
+
+	// 激活状态，忽视指令激活
 	ActivationFunc func(cmd *CMD, qqClient *client.QQClient, msg *Msg) error
 	OnClose        func()
 	floor          int
@@ -131,7 +132,7 @@ func (m *Msg) parseCMD() {
 	c := strings.Split(m.Msg, " ")
 	if len(c) < 1 || strings.Index(c[0], "/") != 0 {
 		for _, c := range CliRoot.cmds {
-			if c.Ignore {
+			if c.ActivationFunc != nil {
 				c.ActivationFunc(c, m.client, m)
 			}
 		}
