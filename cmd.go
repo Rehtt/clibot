@@ -97,7 +97,6 @@ func (c *CMD) findCMD(data []string, uin int64) *CMD {
 }
 
 func (m *Msg) parseCMD() {
-
 	// id发生溢出，临时处理
 	if m.Id < 0 {
 		m.Id += 1 << 16
