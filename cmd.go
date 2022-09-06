@@ -105,7 +105,12 @@ func (m *Msg) parseCMD() {
 	switch m.MsgType {
 	case MsgTypeGroupTemp:
 		tempMsg := m.Original.(*message.TempMessage)
-		m.Msg = tempMsg.ToString()
+		for _, e := range tempMsg.Elements {
+			switch e := e.(type) {
+			case *message.TextElement:
+				m.Msg += e.Content
+			}
+		}
 		m.Sender = &Sender{
 			Uin:  tempMsg.Sender.Uin,
 			Name: tempMsg.Sender.DisplayName(),
@@ -115,7 +120,12 @@ func (m *Msg) parseCMD() {
 
 	case MsgTypePrivate:
 		privateMsg := m.Original.(*message.PrivateMessage)
-		m.Msg = privateMsg.ToString()
+		for _, e := range privateMsg.Elements {
+			switch e := e.(type) {
+			case *message.TextElement:
+				m.Msg += e.Content
+			}
+		}
 		m.Sender = &Sender{
 			Uin:  privateMsg.Sender.Uin,
 			Name: privateMsg.Sender.DisplayName(),
@@ -124,7 +134,12 @@ func (m *Msg) parseCMD() {
 		m.Name = privateMsg.Sender.DisplayName()
 	case MsgTypeGroup:
 		groupMsg := m.Original.(*message.GroupMessage)
-		m.Msg = groupMsg.ToString()
+		for _, e := range groupMsg.Elements {
+			switch e := e.(type) {
+			case *message.TextElement:
+				m.Msg += e.Content
+			}
+		}
 		m.Sender = &Sender{
 			Uin:  groupMsg.Sender.Uin,
 			Name: groupMsg.Sender.DisplayName(),
