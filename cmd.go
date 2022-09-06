@@ -100,7 +100,7 @@ func (m *Msg) parseCMD() {
 
 	// id发生溢出，临时处理
 	if m.Id < 0 {
-		m.Id += 65536
+		m.Id += 1 << 16
 	}
 
 	switch m.MsgType {
