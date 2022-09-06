@@ -44,7 +44,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
 		msg.client = client
-		msg.groupMsg = message
+		msg.Original = message
 		msg.MsgType = MsgTypeGroup
 		msg.parseCMD()
 	})
@@ -52,7 +52,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
 		msg.client = qqClient
-		msg.privateMsg = privateMessage
+		msg.Original = privateMessage
 		msg.MsgType = MsgTypePrivate
 		msg.parseCMD()
 	})
@@ -60,7 +60,7 @@ func (c *cmdBot) Serve(bot *bot.Bot) {
 		msg := pool.Get().(*Msg)
 		defer pool.Put(msg)
 		msg.client = qqClient
-		msg.tempMsg = event.Message
+		msg.Original = event.Message
 		msg.MsgType = MsgTypeGroupTemp
 		msg.parseCMD()
 	})

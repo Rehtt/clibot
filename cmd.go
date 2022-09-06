@@ -19,11 +19,12 @@ type Msg struct {
 	Sender *Sender
 	Msg    string
 
-	MsgType    string
-	client     *client.QQClient
-	groupMsg   *message.GroupMessage
-	privateMsg *message.PrivateMessage
-	tempMsg    *message.TempMessage
+	MsgType string
+	client  *client.QQClient
+	//groupMsg   *message.GroupMessage
+	//privateMsg *message.PrivateMessage
+	//tempMsg    *message.TempMessage
+	Original any
 }
 
 func (m *Msg) SendGroupMsg(groupCode int64, msg *message.SendingMessage) {
@@ -97,30 +98,33 @@ func (m *Msg) parseCMD() {
 
 	switch m.MsgType {
 	case MsgTypeGroupTemp:
-		m.Msg = m.tempMsg.ToString()
+		tempMsg := m.Original.(*message.TempMessage)
+		m.Msg = tempMsg.ToString()
 		m.Sender = &Sender{
-			Uin:  m.tempMsg.Sender.Uin,
-			Name: m.tempMsg.Sender.DisplayName(),
+			Uin:  tempMsg.Sender.Uin,
+			Name: tempMsg.Sender.DisplayName(),
 		}
-		m.Uin = m.tempMsg.GroupCode
-		m.Name = m.tempMsg.GroupName
+		m.Uin = tempMsg.GroupCode
+		m.Name = tempMsg.GroupName
 
 	case MsgTypePrivate:
-		m.Msg = m.privateMsg.ToString()
+		privateMsg := m.Original.(*message.PrivateMessage)
+		m.Msg = privateMsg.ToString()
 		m.Sender = &Sender{
-			Uin:  m.privateMsg.Sender.Uin,
-			Name: m.privateMsg.Sender.DisplayName(),
+			Uin:  privateMsg.Sender.Uin,
+			Name: privateMsg.Sender.DisplayName(),
 		}
-		m.Uin = m.privateMsg.Sender.Uin
-		m.Name = m.privateMsg.Sender.DisplayName()
+		m.Uin = privateMsg.Sender.Uin
+		m.Name = privateMsg.Sender.DisplayName()
 	case MsgTypeGroup:
-		m.Msg = m.groupMsg.ToString()
+		groupMsg := m.Original.(*message.GroupMessage)
+		m.Msg = groupMsg.ToString()
 		m.Sender = &Sender{
-			Uin:  m.groupMsg.Sender.Uin,
-			Name: m.groupMsg.Sender.DisplayName(),
+			Uin:  groupMsg.Sender.Uin,
+			Name: groupMsg.Sender.DisplayName(),
 		}
-		m.Uin = m.groupMsg.GroupCode
-		m.Name = m.groupMsg.GroupName
+		m.Uin = groupMsg.GroupCode
+		m.Name = groupMsg.GroupName
 	}
 
 	c := strings.Split(m.Msg, " ")
