@@ -129,13 +129,10 @@ func (m *Msg) parseCMD() {
 		m.Name = groupMsg.GroupName
 	}
 
+	m.activationFunc(CliRoot)
+
 	c := strings.Split(m.Msg, " ")
 	if len(c) < 1 || strings.Index(c[0], "/") != 0 {
-		for _, c := range CliRoot.cmds {
-			if c.ActivationFunc != nil {
-				c.ActivationFunc(c, m.client, m)
-			}
-		}
 		return
 	}
 	arg := make([]string, 0, len(c))
@@ -176,5 +173,14 @@ func onClose(c *CMD) {
 	}
 	if c.OnClose != nil {
 		c.OnClose()
+	}
+}
+
+func (m *Msg) activationFunc(cmd *CMD) {
+	for _, c := range cmd.cmds {
+		m.activationFunc(c)
+		if c.ActivationFunc != nil {
+			c.ActivationFunc(c, m.client, m)
+		}
 	}
 }
